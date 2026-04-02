@@ -1,0 +1,329 @@
+:root {
+  --bg: #141414;
+  --surface: #1E1E1E;
+  --card: #252525;
+  --border: #333;
+  --green: #6DBF3A;
+  --green-dark: #55A028;
+  --orange: #F97316;
+  --orange-dark: #E06010;
+  --text: #F2F2F2;
+  --text-muted: #7A7A7A;
+  --text-dim: #444;
+  --radius: 14px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Header ─────────────────────────────────── */
+.field-header {
+  background: #0D0D0D;
+  border-bottom: 1px solid var(--border);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-icon {
+  width: 32px;
+  height: 32px;
+  background: var(--green);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.brand-name {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.field-header nav a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin-left: 18px;
+  transition: color 0.15s;
+}
+
+.field-header nav a:hover { color: var(--text); }
+
+/* ── Clock Hero ──────────────────────────────── */
+.clock-hero {
+  text-align: center;
+  padding: 28px 20px 24px;
+  position: relative;
+}
+
+.clock-hero::after {
+  content: '';
+  display: block;
+  width: 48px;
+  height: 3px;
+  background: var(--green);
+  border-radius: 2px;
+  margin: 18px auto 0;
+}
+
+.time-display {
+  font-size: 3.8rem;
+  font-weight: 900;
+  letter-spacing: -2px;
+  line-height: 1;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.date-display {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 8px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+
+/* ── Mode Toggle ─────────────────────────────── */
+.mode-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 0 16px 16px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 5px;
+  border: 1px solid var(--border);
+  gap: 5px;
+}
+
+.mode-btn {
+  padding: 15px 12px;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.mode-btn.active[data-mode="in"] {
+  background: var(--green);
+  color: #0A0A0A;
+  box-shadow: 0 2px 16px rgba(109, 191, 58, 0.3);
+}
+
+.mode-btn.active[data-mode="out"] {
+  background: var(--orange);
+  color: #0A0A0A;
+  box-shadow: 0 2px 16px rgba(249, 115, 22, 0.3);
+}
+
+/* ── Form Card ───────────────────────────────── */
+.form-card {
+  margin: 0 16px;
+  background: var(--card);
+  border-radius: 18px;
+  padding: 24px 20px 20px;
+  border: 1px solid var(--border);
+}
+
+.field-group {
+  margin-bottom: 16px;
+}
+
+.field-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.select-wrap {
+  position: relative;
+}
+
+.select-wrap::after {
+  content: '';
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid var(--text-muted);
+  pointer-events: none;
+}
+
+.field-select {
+  width: 100%;
+  padding: 18px 52px 18px 20px;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  font-size: 1.05rem;
+  font-weight: 700;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.field-select:focus {
+  outline: none;
+  border-color: var(--green);
+  background: #2A2A2A;
+}
+
+.field-select option {
+  background: #2A2A2A;
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* ── Action Button ───────────────────────────── */
+.action-btn {
+  width: 100%;
+  padding: 22px;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.15s;
+  margin-top: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.action-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.12);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.action-btn:hover::before { opacity: 1; }
+.action-btn:active { transform: scale(0.975); }
+
+.action-btn.btn-in {
+  background: var(--green);
+  color: #0A0A0A;
+  box-shadow: 0 6px 24px rgba(109, 191, 58, 0.4);
+}
+
+.action-btn.btn-out {
+  background: var(--orange);
+  color: #0A0A0A;
+  box-shadow: 0 6px 24px rgba(249, 115, 22, 0.4);
+}
+
+/* ── Status Card ─────────────────────────────── */
+.status-card {
+  margin: 14px 16px 0;
+  padding: 18px 20px;
+  border-radius: var(--radius);
+  display: none;
+  animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.status-card.show { display: block; }
+
+.status-card.success {
+  background: rgba(109, 191, 58, 0.1);
+  border: 1.5px solid rgba(109, 191, 58, 0.5);
+}
+
+.status-card.error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1.5px solid rgba(239, 68, 68, 0.5);
+}
+
+.status-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.status-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.status-title {
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.status-card.success .status-title { color: var(--green); }
+.status-card.error .status-title { color: #EF4444; }
+
+.status-body {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+/* ── Currently clocked in indicator ─────────── */
+.clocked-in-badge {
+  display: none;
+  margin: 14px 16px 0;
+  padding: 12px 16px;
+  background: rgba(109, 191, 58, 0.08);
+  border: 1px solid rgba(109, 191, 58, 0.3);
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--green);
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+/* ── Bottom padding ──────────────────────────── */
+.bottom-space { height: 40px; }

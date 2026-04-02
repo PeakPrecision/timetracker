@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Field Crew</title>
+  <link rel="stylesheet" href="field.css">
+  <style>
+    .admin-wrap { max-width: 1000px; margin: 0 auto; padding: 24px 16px; }
+
+    .pw-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .pw-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px 28px;
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+    }
+    .pw-box h2 {
+      font-size: 1.1rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 6px;
+    }
+    .pw-box p { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 24px; }
+
+    .pw-input {
+      width: 100%;
+      padding: 16px 18px;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .pw-input:focus { outline: none; border-color: var(--green); }
+
+    /* Filters */
+    .filters-bar {
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .filter-group { flex: 1; min-width: 160px; }
+    .filter-group label {
+      display: block;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .filter-input {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .filter-input:focus { outline: none; border-color: var(--green); }
+
+    .btn-ghost {
+      padding: 12px 20px;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .btn-ghost:hover { color: var(--text); border-color: var(--text-muted); }
+
+    /* Summary grid */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .summary-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+    }
+    .summary-card .s-job {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .summary-card .s-hours {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--green);
+      line-height: 1;
+    }
+    .summary-card .s-label {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      margin-top: 4px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Section header */
+    .section-label {
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    /* Table */
+    .table-wrap { overflow-x: auto; border-radius: 14px; border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; }
+    thead { background: #1a1a1a; }
+    th {
+      padding: 13px 16px;
+      text-align: left;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    td {
+      padding: 14px 16px;
+      border-top: 1px solid var(--border);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 11px;
+      border-radius: 20px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .badge-open { background: rgba(249,115,22,0.15); color: var(--orange); border: 1px solid rgba(249,115,22,0.3); }
+    .badge-done { background: rgba(109,191,58,0.12); color: var(--green); border: 1px solid rgba(109,191,58,0.3); }
+
+    .hours-val { color: var(--green); font-weight: 800; }
+    .no-entries { text-align: center; color: var(--text-muted); padding: 48px 0; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+
+  <div class="pw-screen" id="pwScreen">
+    <div class="pw-box">
+      <h2>Admin</h2>
+      <p>Enter your password to access the dashboard.</p>
+      <input class="pw-input" type="password" id="pwInput" placeholder="Password" onkeydown="if(event.key==='Enter')checkPw()">
+      <button class="action-btn btn-in" onclick="checkPw()" style="margin-top:0">Enter</button>
+      <div class="status-card" id="pw-alert" style="margin-top:14px;text-align:left">
+        <div class="status-row">
+          <div class="status-icon">✕</div>
+          <div><div class="status-title">Error</div><div class="status-body" id="pw-msg"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="adminDash" style="display:none">
+    <header class="field-header">
+      <div class="brand">
+        <div class="brand-icon">🌿</div>
+        <div class="brand-name">Admin</div>
+      </div>
+      <nav>
+        <a href="index.html">Clock In/Out</a>
+        <a href="setup.html">Setup</a>
+      </nav>
+    </header>
+
+    <div class="admin-wrap">
+      <div class="filters-bar">
+        <div class="filter-group">
+          <label>Filter by Date</label>
+          <input type="date" class="filter-input" id="filterDate" onchange="load()">
+        </div>
+        <button class="btn-ghost" onclick="clearFilter()">Show All</button>
+      </div>
+
+      <div class="summary-grid" id="summaryGrid"></div>
+
+      <div class="section-label">Time Entries</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Employee</th>
+              <th>Job Site</th>
+              <th>Clock In</th>
+              <th>Clock Out</th>
+              <th>Hours</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+        <div class="no-entries" id="noEntries" style="display:none">No entries found.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function checkPw() {
+      if (document.getElementById('pwInput').value === 'admin') {
+        document.getElementById('pwScreen').style.display = 'none';
+        document.getElementById('adminDash').style.display = 'block';
+        load();
+      } else {
+        const a = document.getElementById('pw-alert');
+        document.getElementById('pw-msg').textContent = 'Incorrect password.';
+        a.className = 'status-card show error';
+      }
+    }
+
+    function clearFilter() {
+      document.getElementById('filterDate').value = '';
+      load();
+    }
+
+    function fmt(iso) {
+      if (!iso) return '—';
+      return new Date(iso).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+
+    function hrs(inIso, outIso) {
+      if (!outIso) return null;
+      return ((new Date(outIso) - new Date(inIso)) / 3600000).toFixed(2);
+    }
+
+    async function load() {
+      const date = document.getElementById('filterDate').value;
+      const url = date ? `/api/entries?date=${date}` : '/api/entries';
+      let entries = [];
+      try { entries = await fetch(url).then(r => r.json()); } catch (_) {}
+
+      const tbody = document.getElementById('tbody');
+      tbody.innerHTML = '';
+      document.getElementById('noEntries').style.display = entries.length === 0 ? 'block' : 'none';
+
+      entries.forEach(e => {
+        const h = hrs(e.clock_in, e.clock_out);
+        const open = !e.clock_out;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${e.employee}</td>
+          <td>${e.job}</td>
+          <td>${fmt(e.clock_in)}</td>
+          <td>${fmt(e.clock_out)}</td>
+          <td>${h !== null ? `<span class="hours-val">${h}</span>` : '—'}</td>
+          <td><span class="badge ${open ? 'badge-open' : 'badge-done'}">${open ? 'Active' : 'Done'}</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Job totals
+      const totals = {};
+      entries.forEach(e => {
+        if (!e.clock_out) return;
+        totals[e.job] = (totals[e.job] || 0) + parseFloat(hrs(e.clock_in, e.clock_out));
+      });
+
+      const grid = document.getElementById('summaryGrid');
+      grid.innerHTML = '';
+      Object.entries(totals).sort((a,b) => b[1]-a[1]).forEach(([job, h]) => {
+        const c = document.createElement('div');
+        c.className = 'summary-card';
+        c.innerHTML = `<div class="s-job">${job}</div><div class="s-hours">${h.toFixed(2)}</div><div class="s-label">Total Hours</div>`;
+        grid.appendChild(c);
+      });
+    }
+  </script>
+</body>
+</html>

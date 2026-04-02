@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Crew Time Tracker</title>
+  <link rel="stylesheet" href="field.css">
+</head>
+<body>
+
+  <header class="field-header">
+    <div class="brand">
+      <div class="brand-icon">🌿</div>
+      <div class="brand-name">Peak Precision Field Crew</div>
+    </div>
+    <nav>
+      <a href="admin.html">Admin</a>
+      <a href="setup.html">Setup</a>
+    </nav>
+  </header>
+
+  <!-- Clock Hero -->
+  <div class="clock-hero">
+    <div class="time-display" id="clock"></div>
+    <div class="date-display" id="dateDisplay"></div>
+  </div>
+
+  <!-- Mode Toggle -->
+  <div class="mode-toggle">
+    <button class="mode-btn active" data-mode="in" onclick="switchTab('in')">Clock In</button>
+    <button class="mode-btn" data-mode="out" onclick="switchTab('out')">Clock Out</button>
+  </div>
+
+  <!-- Clock In Form -->
+  <div id="tab-in" class="tab-panel">
+    <div class="form-card">
+      <div class="field-group">
+        <label class="field-label">Your Name</label>
+        <div class="select-wrap">
+          <select class="field-select" id="in-employee">
+            <option value="">Select name...</option>
+            <option value="1">Landon</option>
+            <option value="2">Cristian</option>
+            <option value="3">Andrew</option>
+            <option value="4">Riley</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Job Site</label>
+        <div class="select-wrap">
+          <select class="field-select" id="in-job">
+            <option value="">Select job...</option>
+            <option value="1">103 N Jarvis</option>
+            <option value="2">105 N Jarvis</option>
+            <option value="3">805 E. 1st St</option>
+            <option value="4">105 S Rotary Ave</option>
+            <option value="5">107 S Rotary Ave</option>
+            <option value="6">111 S Rotary Ave</option>
+          </select>
+        </div>
+      </div>
+      <button class="action-btn btn-in" onclick="clockIn()">⏱ Clock In</button>
+    </div>
+    <div class="status-card" id="in-alert">
+      <div class="status-row">
+        <div class="status-icon" id="in-icon"></div>
+        <div>
+          <div class="status-title" id="in-title"></div>
+          <div class="status-body" id="in-body"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Clock Out Form -->
+  <div id="tab-out" class="tab-panel" style="display:none">
+    <div class="form-card">
+      <div class="field-group">
+        <label class="field-label">Your Name</label>
+        <div class="select-wrap">
+          <select class="field-select" id="out-employee">
+            <option value="">Select name...</option>
+            <option value="1">Landon</option>
+            <option value="2">Cristian</option>
+            <option value="3">Andrew</option>
+            <option value="4">Riley</option>
+          </select>
+        </div>
+      </div>
+      <button class="action-btn btn-out" onclick="clockOut()">🏁 Clock Out</button>
+    </div>
+    <div class="status-card" id="out-alert">
+      <div class="status-row">
+        <div class="status-icon" id="out-icon"></div>
+        <div>
+          <div class="status-title" id="out-title"></div>
+          <div class="status-body" id="out-body"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-space"></div>
+
+  <script>
+    // Live clock
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('clock').textContent =
+        now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      document.getElementById('dateDisplay').textContent =
+        now.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' });
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Try loading from API (when server is running)
+    async function loadDropdowns() {
+      try {
+        const [emps, jobs] = await Promise.all([
+          fetch('/api/employees').then(r => r.json()),
+          fetch('/api/jobs').then(r => r.json())
+        ]);
+        ['in-employee', 'out-employee'].forEach(id => {
+          const sel = document.getElementById(id);
+          sel.innerHTML = '<option value="">Select name...</option>';
+          emps.forEach(e => sel.add(new Option(e.name, e.id)));
+        });
+        const jobSel = document.getElementById('in-job');
+        jobSel.innerHTML = '<option value="">Select job...</option>';
+        jobs.forEach(j => jobSel.add(new Option(j.name, j.id)));
+      } catch (_) { /* use hardcoded fallback */ }
+    }
+    loadDropdowns();
+
+    function switchTab(tab) {
+      document.querySelectorAll('.mode-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.mode === tab);
+      });
+      document.getElementById('tab-in').style.display = tab === 'in' ? 'block' : 'none';
+      document.getElementById('tab-out').style.display = tab === 'out' ? 'block' : 'none';
+    }
+
+    function showStatus(prefix, msg, type) {
+      const card = document.getElementById(`${prefix}-alert`);
+      document.getElementById(`${prefix}-icon`).textContent = type === 'success' ? '✓' : '✕';
+      document.getElementById(`${prefix}-title`).textContent = type === 'success' ? 'Confirmed' : 'Error';
+      document.getElementById(`${prefix}-body`).textContent = msg;
+      card.className = `status-card show ${type}`;
+      setTimeout(() => card.classList.remove('show'), 7000);
+    }
+
+    async function clockIn() {
+      const emp = document.getElementById('in-employee').value;
+      const job = document.getElementById('in-job').value;
+      if (!emp || !job) return showStatus('in', 'Select your name and a job site.', 'error');
+      try {
+        const res = await fetch('/api/clock-in', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ employee_id: emp, job_id: job })
+        });
+        const data = await res.json();
+        if (!res.ok) return showStatus('in', data.error, 'error');
+        const t = new Date(data.clock_in).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        showStatus('in', `${data.employee} clocked in at ${t}\n${data.job}`, 'success');
+        document.getElementById('in-employee').value = '';
+        document.getElementById('in-job').value = '';
+      } catch (_) {
+        showStatus('in', 'Cannot reach server. Is it running?', 'error');
+      }
+    }
+
+    async function clockOut() {
+      const emp = document.getElementById('out-employee').value;
+      if (!emp) return showStatus('out', 'Select your name.', 'error');
+      try {
+        const res = await fetch('/api/clock-out', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ employee_id: emp })
+        });
+        const data = await res.json();
+        if (!res.ok) return showStatus('out', data.error, 'error');
+        const t = new Date(data.clock_out).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        showStatus('out', `${data.employee} clocked out at ${t} — ${data.hours} hrs on ${data.job}`, 'success');
+        document.getElementById('out-employee').value = '';
+      } catch (_) {
+        showStatus('out', 'Cannot reach server. Is it running?', 'error');
+      }
+    }
+  </script>
+</body>
+</html>
