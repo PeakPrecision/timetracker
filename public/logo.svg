@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120" fill="none">
+  <!-- Left background ridge -->
+  <path d="M10 85 L35 52 L48 62 L38 85Z" fill="#6B7A35" opacity="0.6"/>
+
+  <!-- Far right peak -->
+  <path d="M138 85 L158 48 L163 55 L168 45 L178 85Z" fill="#6B7A35" opacity="0.75"/>
+
+  <!-- Right peak -->
+  <path d="M108 85 L130 32 L136 42 L148 85Z" fill="#7A8C3F"/>
+
+  <!-- Main center peak -->
+  <path d="M40 85 L90 8 L102 22 L115 85Z" fill="#7A8C3F"/>
+
+  <!-- Snow / highlight details on main peak -->
+  <path d="M90 8 L84 28 L90 22 L96 30 L102 22Z" fill="white" opacity="0.25"/>
+  <path d="M76 42 L80 36 L84 44Z" fill="white" opacity="0.2"/>
+  <path d="M98 38 L102 30 L106 42Z" fill="white" opacity="0.2"/>
+
+  <!-- Rock detail lines -->
+  <path d="M70 55 L75 48 M82 60 L86 52 M95 50 L99 42" stroke="#556030" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
+  <path d="M125 50 L129 42 M133 58 L136 50" stroke="#556030" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+</svg>
